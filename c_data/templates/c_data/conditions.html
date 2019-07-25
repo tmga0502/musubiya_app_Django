@@ -1,0 +1,490 @@
+{% extends 'c_data/base.html' %}
+
+{% block content %}
+<div id="wrapper">
+    <!--BEGIN SIDEBAR MENU-->
+    <nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+      <div class="sidebar-collapse menu-scroll">
+          <ul id="side-menu" class="nav">
+              <div class="clearfix"></div>
+              <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-tachometer fa-fw">
+                  <div class="icon-bg bg-orange"></div>
+                </i><span class="menu-title">Dashboard</span></a></li>
+              <li><a href="{% url 'c_data:list' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                  <div class="icon-bg bg-green"></div>
+                </i><span class="menu-title">顧客一覧</span></a>
+              </li>
+              <li class="active"><a href="#"><i class="fa fa-th-list fa-fw">
+                  <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">詳細</span></a>
+              </li>
+              <li><a href="{% url 'c_data:new_data' pk=user.id %}"><i class="fa fa-edit fa-fw">
+                  <div class="icon-bg bg-violet"></div>
+                </i><span class="menu-title">新規登録</span></a>
+              </li>
+              <li><a href="{% url 'c_data:prospect' pk=user.id %}"><i class="fa fa-th-list fa-fw">
+                  <div class="icon-bg bg-blue"></div>
+                </i><span class="menu-title">見込管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:progress' pk=user.id %}"><i class="fa fa-clock-o fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">進捗管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:data' pk=user.id %}"><i class="fa fa-user fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">紹介管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:budget_control' pk=user.id %}"><i class="fa fa-bar-chart-o fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">予実管理</span></a>
+              </li>
+              <li><a href="{% url 'reservation:index' %}"><i class="fa fa-calendar fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">設備予約へ</span></a>
+                </li>
+          </ul>
+      </div>
+    </nav>
+    <!--END SIDEBAR MENU-->
+    <!--BEGIN PAGE WRAPPER-->
+    <div id="page-wrapper">
+        <!--BEGIN TITLE & BREADCRUMB PAGE-->
+        <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+            <div class="page-header pull-left">
+                <div class="page-title">【{{ c_data.customer_name }}】条件検索</div>
+            </div>
+            <ol class="breadcrumb page-breadcrumb pull-right">
+                <li><i class="fa fa-home"></i>&nbsp;<a href="{% url 'c_data:user_detail' pk=user.id %}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                <li class="active"><a href="{% url 'c_data:list' pk=user.id %}">顧客一覧</a><i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                <li class="active">【{{ c_data.customer_name }}】条件検索</li>
+            </ol>
+            <div class="clearfix">
+            </div>
+        </div>
+        <!--END TITLE & BREADCRUMB PAGE-->
+        <!--BEGIN CONTENT-->
+        <div class="page-content">
+            <div id="tab-general">
+                <div class="row mbl">
+                    <div class="col-lg-12">
+                      <div class="col-md-12">
+                          <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
+                          </div>
+                      </div>
+                    </div>
+
+        <!-- REINS条件 -->
+                <div class="col-lg-12">
+                  <div class="row">
+                      <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-12">
+                              <div class="panel panel-green">
+                                  <div class="panel-heading" style="text-align:center;">REINS</div>
+                                    <div class="panel-body">
+                                      <table class="table table-bordered">
+                                          <!--賃貸or購入-->
+                                          <tr>
+                                            <td>賃貸or購入</td>
+                                            <td>
+                                              <select>
+                                                <option>賃貸</option>
+                                                <option>購入</option>
+                                              </select>
+                                            </td>
+                                          </tr>
+
+                                          <!--売買-->
+                                            <!--基本条件-->
+                                            <table class="table table-bordered">
+                                              <th colspan=4 style="text-align:center;">基本条件</th>
+                                              <tr>
+                                                <td>対象区分</td>
+                                                <td>
+                                                    <input type="radio" name="zkSyKbn" value="1" checked="checked" onclick="changeDisabled()">在庫
+                                                    <input type="radio" name="zkSyKbn" value="2" onclick="changeDisabled()">成約
+                                                    <input type="checkbox" name="zshBkFlg" value="1">自社登録物件のみ
+                                                </td>
+                                                <td>並び順</td>
+                                                <td>
+                                                    <select name="stJyk" size="1">
+                                                        <option value=""></option>
+                                                        <option value="0">物件番号</option>
+                                                        <option value="1">物件種目</option>
+                                                        <option value="2">所在地</option>
+                                                        <option value="3">沿線駅</option>
+                                                    </select>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>物件種別１</td>
+                                                <td>
+                                                    <select name="bkknShbt1" onchange="displayChooseWithValue(1)">
+                                                        <option value=""></option>
+                                                        <option value="01">売土地</option>
+                                                        <option value="02">売一戸建</option>
+                                                        <option value="03">売マンション</option>
+                                                        <option value="04">売外全</option>
+                                                        <option value="05">売外一</option>
+                                                    </select>
+                                                </td>
+                                                <td>物件種目１</td>
+                                                <td id="bkknShmkList1" style="display: none">
+                                                    <select name="bkknShmkDispList1" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList1[0],document.forms[0].bkknShmk1)">
+                                                        <option value=""></option>
+                                                        <option value="01">売地</option>
+                                                        <option value="02">借地権</option>
+                                                        <option value="03">底地権</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList2" style="display: none">
+                                                    <select name="bkknShmkDispList1" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList1[1],document.forms[0].bkknShmk1)">
+                                                        <option value=""></option>
+                                                        <option value="01">新築戸建</option>
+                                                        <option value="02">中古戸建</option>
+                                                        <option value="03">新築テラス</option>
+                                                        <option value="04">中古テラス</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList3" style="display: none">
+                                                    <select name="bkknShmkDispList1" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList1[2],document.forms[0].bkknShmk1)">
+                                                        <option value=""></option>
+                                                        <option value="01">新築マンション</option>
+                                                        <option value="02">中古マンション</option>
+                                                        <option value="07">新築タウン</option>
+                                                        <option value="08">中古タウン</option>
+                                                        <option value="09">新築リゾート</option>
+                                                        <option value="10">中古リゾート</option>
+                                                        <option value="99">その他</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList4" class="leftTd valueTableColorB tdWidthC" style="display: none">
+                                                    <select name="bkknShmkDispList1" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList1[3],document.forms[0].bkknShmk1)">
+                                                        <option value=""></option>
+                                                        <option value="01">店舗</option>
+                                                        <option value="02">店舗付住宅</option>
+                                                        <option value="03">住宅付店舗</option>
+                                                        <option value="04">事務所</option>
+                                                        <option value="05">店舗事務所</option>
+                                                        <option value="06">ビル</option>
+                                                        <option value="07">工場</option>
+                                                        <option value="08">マンション</option>
+                                                        <option value="09">倉庫</option>
+                                                        <option value="10">アパート</option>
+                                                        <option value="11">寮</option>
+                                                        <option value="12">旅館</option>
+                                                        <option value="13">ホテル</option>
+                                                        <option value="14">別荘</option>
+                                                        <option value="15">リゾート</option>
+                                                        <option value="16">文化住宅</option>
+                                                        <option value="99">その他</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList5" style="display: none">
+                                                    <select name="bkknShmkDispList1" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList1[4],document.forms[0].bkknShmk1)">
+                                                        <option value=""></option>
+                                                        <option value="01">店舗</option>
+                                                        <option value="02">事務所</option>
+                                                        <option value="03">店舗事務所</option>
+                                                        <option value="99">その他</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList0" class="leftTd valueTableColorB tdWidthC">
+                                                    <select name="bkknShmkDispList1" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList1[5],document.forms[0].bkknShmk1)">
+                                                        <option value=""></option>
+                                                    </select>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="centerTd indexTableColorA tdWidthA">物件種別２</td>
+                                                <td class="leftTd valueTableColorB tdWidthC">
+                                                    <select name="bkknShbt2" onchange="displayChooseWithValue(2)">
+                                                        <option value=""></option>
+                                                        <option value="01">売土地</option>
+                                                        <option value="02">売一戸建</option>
+                                                        <option value="03">売マンション</option>
+                                                        <option value="04">売外全</option>
+                                                        <option value="05">売外一</option>
+                                                    </select>
+                                                </td>
+                                                <td class="centerTd indexTableColorA tdWidthA">物件種目２</td>
+                                                <td id="bkknShmkList6" class="leftTd valueTableColorB tdWidthC" style="display: none">
+                                                    <select name="bkknShmkDispList2" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList2[0],document.forms[0].bkknShmk2)">
+                                                        <option value=""></option>
+                                                        <option value="01">売地</option>
+                                                        <option value="02">借地権</option>
+                                                        <option value="03">底地権</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList7" class="leftTd valueTableColorB tdWidthC" style="display: none">
+                                                    <select name="bkknShmkDispList2" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList2[1],document.forms[0].bkknShmk2)">
+                                                        <option value=""></option>
+                                                        <option value="01">新築戸建</option>
+                                                        <option value="02">中古戸建</option>
+                                                        <option value="03">新築テラス</option>
+                                                        <option value="04">中古テラス</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList8" class="leftTd valueTableColorB tdWidthC" style="display: none">
+                                                    <select name="bkknShmkDispList2" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList2[2],document.forms[0].bkknShmk2)">
+                                                        <option value=""></option>
+                                                        <option value="01">新築マンション</option>
+                                                        <option value="02">中古マンション</option>
+                                                        <option value="07">新築タウン</option>
+                                                        <option value="08">中古タウン</option>
+                                                        <option value="09">新築リゾート</option>
+                                                        <option value="10">中古リゾート</option>
+                                                        <option value="99">その他</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList9" class="leftTd valueTableColorB tdWidthC" style="display: none">
+                                                    <select name="bkknShmkDispList2" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList2[3],document.forms[0].bkknShmk2)">
+                                                        <option value=""></option>
+                                                        <option value="01">店舗</option>
+                                                        <option value="02">店舗付住宅</option>
+                                                        <option value="03">住宅付店舗</option>
+                                                        <option value="04">事務所</option>
+                                                        <option value="05">店舗事務所</option>
+                                                        <option value="06">ビル</option>
+                                                        <option value="07">工場</option>
+                                                        <option value="08">マンション</option>
+                                                        <option value="09">倉庫</option>
+                                                        <option value="10">アパート</option>
+                                                        <option value="11">寮</option>
+                                                        <option value="12">旅館</option>
+                                                        <option value="13">ホテル</option>
+                                                        <option value="14">別荘</option>
+                                                        <option value="15">リゾート</option>
+                                                        <option value="16">文化住宅</option>
+                                                        <option value="99">その他</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList10" class="leftTd valueTableColorB tdWidthC" style="display: none">
+                                                    <select name="bkknShmkDispList2" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList2[4],document.forms[0].bkknShmk2)">
+                                                        <option value=""></option>
+                                                        <option value="01">店舗</option>
+                                                        <option value="02">事務所</option>
+                                                        <option value="03">店舗事務所</option>
+                                                        <option value="99">その他</option>
+                                                    </select>
+                                                </td>
+                                                <td id="bkknShmkList11" class="leftTd valueTableColorB tdWidthC" >
+                                                    <select name="bkknShmkDispList2" size="1" onchange="getSelectedValue(document.forms[0].bkknShmkDispList2[5],document.forms[0].bkknShmk2)">
+                                                        <option value="　　　　　　">　　　　　　</option>
+                                                    </select>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="centerTd indexTableColorA tdWidthA">新築・中古区分</td>
+                                                <td colspan="3" class="leftTd valueTableColorB">
+                                                    <input type="radio" name="shtkChkKbnShti" value="0" checked="checked">指定なし
+                                                    <input type="radio" name="shtkChkKbnShti" value="1">新築
+                                                    <input type="radio" name="shtkChkKbnShti" value="2">中古
+                                                    <span class="informationMsg">&nbsp;&nbsp;(外全/外一)</span>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                  <td class="centerTd indexTableColorA">土地権利／借地権種類</td>
+                                                  <td colspan="3" class="leftTd valueTableColorB">
+                                                      <input type="radio" name="shkcknShriSti" value="0" checked="checked">指定なし
+                                                      <input type="radio" name="shkcknShriSti" value="1">所有権のみ
+                                                      <input type="radio" name="shkcknShriSti" value="2">借地権のみ
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="centerTd indexTableColorA">その他条件</td>
+                                                <td colspan="3" class="leftTd valueTableColorB"><input type="checkbox" name="zmumKbn" value="1">図面ありのみ
+                                                      <input type="checkbox" name="gzumKbn" value="1">物件画像ありのみ
+
+                                                      <input type="checkbox" name="zmkyBkknKskFlg" value="1">財務局物件のみ
+                                                      <input type="checkbox" name="okshKskFlg" value="1">オークションのみ
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="centerTd indexTableColorA">商号の有無</td>
+                                                <td colspan="3" class="leftTd valueTableColorB">
+                                                        <input type="radio" name="shgUmKbn" value="1" checked="checked">商号あり
+                                                        <input type="radio" name="shgUmKbn" value="0">商号なし
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td class="centerTd indexTableColorA">取引状況</td>
+                                                <td colspan="3" class="leftTd valueTableColorB">
+                                                    <input type="radio" name="trhkJyukyu" value="0" checked="checked">指定なし
+                                                    <input type="radio" name="trhkJyukyu" value="1">公開中のみ
+                                                    <input type="radio" name="trhkJyukyu" value="2">書面による購入申込みありのみ
+                                                    <input type="radio" name="trhkJyukyu" value="3">売主都合で一時紹介停止中のみ
+                                                </td>
+                                              </tr>
+                                            </table>
+                                            <!--end基本条件-->
+
+                                            <!--所在地・沿線-->
+                                              <!--所在地１-->
+                                              <table class="table table-bordered">
+                                                <th colspan=4 style="text-align:center;">所在地・沿線</th>
+                                                <tr>
+                                                  <td class="leftTd indexStyleC" colSpan=4>成約検索結果の詳細参照時に所在地名３および部屋番号を表示する場合、下記のチェックを入れた後に開く<span class=statusViewMsg>取扱規約に「承諾する」必要があります。</span>
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorA">所在地詳細の表示</Td>
+                                                  <td class="leftTd valueTableColorB tdWidthB" colSpan=3>
+                                                      <input type="checkbox" name="shzicShusiHyujDuiChk" value="1" onclick="openKiyaku('1500','1','760475676900403540');return false;"><span class=imeDisabled>成約検索結果の詳細参照時に所在地名３、部屋番号を表示する</span>
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td colspan="4" class="leftTd indexStyleC">所在地１(所在地、沿線はいずれか必須。<span class="statusViewMsg">ただし住宅以外の場合に限り、必須ではありません。</span>)</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC" >都道府県名</td>
+                                                  <td colspan="3" class="leftTd valueTableColorB tdWidthB">
+                                                      <input type="text" name="tdfkMi1" maxlength="10" value="" id="tdfkMi1" class="imeActive inputType2byte1to4 textBoxPositionC">
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC tdWidthA">所在地名１</td>
+                                                  <td class="leftTd valueTableColorB tdWidthC">
+                                                      <input type="text" name="shzicmi1_1" maxlength="20" value="" id="shzicmi1_1" class="imeActive inputType2byte11to20">
+                                                  <br>
+                                                  <span class="informationMsg">&nbsp;&nbsp;※この項目は完全一致にて検索を行います。</span>
+                                                  <br>
+                                                  <span class="informationMsg statusViewMsg">&nbsp;&nbsp;東京２３区全域を指定したい場合は『２３区』と入力してください。</span>
+                                                  </td>
+                                                  <td class="centerTd indexTableColorC tdWidthA">所在地名２</td>
+                                                  <td class="leftTd valueTableColorB tdWidthC"><input type="text" name="shzicmi2_1" maxlength="20" value="" id="shzicmi2_1" class="imeActive inputType2byte11to20">
+                                                      <select name="shzicJyk_1">
+                                                          <option value="1" selected="selected">前方</option>
+                                                          <option value="2">部分</option>
+                                                      </select>
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC" >建物名</td>
+                                                  <td colspan="3" class="leftTd valueTableColorB tdWidthB">
+                                                      <input type="text" name="ttmnmi_1" maxlength="35" value="" class="imeActive inputType2byte21to50">
+                                                          <select name="ttmnJyk_1">
+                                                              <option value="1" selected="selected">前方</option>
+                                                              <option value="2">部分</option>
+                                                          </select>
+                                                          <span class="informationMsg">&nbsp;&nbsp;(マンション/外全/外一)</span>
+                                                  </td>
+                                                </tr>
+                                                <br>
+                                                <tr>
+                                                  <td colspan=4>
+                                                      <button type="button" class="btn-s btn-default" id="address_display" style="float:right;">その他入力項目を表示する</button>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                              <br>
+
+                                              <!--所在地２・３-->
+                                              <table class="table table-bordered" style="">
+                                                <tr>
+                                                  <td colspan=4 class="leftTd indexStyleC">所在地２</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC" >都道府県名</td>
+                                                  <td colspan="3" class="leftTd valueTableColorB tdWidthB">
+                                                      <input type="text" name="tdfkMi2" maxlength="10" value="" id="tdfkMi2" class="imeActive inputType2byte1to4 textBoxPositionC">
+                                                      <span class="informationMsg">&nbsp;&nbsp;※この項目は完全一致にて検索を行います。</span>
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC tdWidthA">所在地名１</td>
+                                                  <td class="leftTd valueTableColorB tdWidthC"><input type="text" name="shzicmi1_2" maxlength="20" value="" id="shzicmi1_2" class="imeActive inputType2byte11to20">
+                                                  <br><span class="informationMsg">&nbsp;&nbsp;※この項目は完全一致にて検索を行います。</span></td>
+                                                  <td class="centerTd indexTableColorC tdWidthA">所在地名２</td>
+                                                  <td class="leftTd valueTableColorB tdWidthC">
+                                                      <input type="text" name="shzicmi2_2" maxlength="20" value="" id="shzicmi2_2" class="imeActive inputType2byte11to20">
+                                                      <select name="shzicJyk_2">
+                                                          <option value="1" selected="selected">前方</option>
+                                                          <option value="2">部分</option></select>
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC" >建物名</td>
+                                                  <td colspan="3" class="leftTd valueTableColorB tdWidthB">
+                                                      <input type="text" name="ttmnmi_2" maxlength="35" value="" class="imeActive inputType2byte21to50">
+                                                      <select name="ttmnJyk_2">
+                                                          <option value="1" selected="selected">前方</option>
+                                                          <option value="2">部分</option>
+                                                      </select>
+                                                      <span class="informationMsg">&nbsp;&nbsp;(マンション/外全/外一)</span>
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td colspan="4" class="leftTd indexStyleC">所在地３</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC" >都道府県名</td>
+                                                  <td colspan="3" class="leftTd valueTableColorB tdWidthB">
+                                                  <input type="text" name="tdfkMi3" maxlength="10" value="" id="tdfkMi3" class="imeActive inputType2byte1to4 textBoxPositionC">
+                                                  <span class="informationMsg">&nbsp;&nbsp;※この項目は完全一致にて検索を行います。</span>
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC tdWidthA">所在地名１</td>
+                                                  <td class="leftTd valueTableColorB tdWidthC"><input type="text" name="shzicmi1_3" maxlength="20" value="" id="shzicmi1_3" class="imeActive inputType2byte11to20">
+                                                  <br><span class="informationMsg">&nbsp;&nbsp;※この項目は完全一致にて検索を行います。</span></td>
+                                                  <td class="centerTd indexTableColorC tdWidthA">所在地名２</td>
+                                                  <td class="leftTd valueTableColorB tdWidthC">
+                                                      <input type="text" name="shzicmi2_3" maxlength="20" value="" id="shzicmi2_3" class="imeActive inputType2byte11to20">
+                                                      <select name="shzicJyk_3">
+                                                          <option value="1" selected="selected">前方</option>
+                                                          <option value="2">部分</option>
+                                                      </select>
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="centerTd indexTableColorC" >建物名</td>
+                                                  <td colspan="3" class="leftTd valueTableColorB tdWidthB">
+                                                      <input type="text" name="ttmnmi_3" maxlength="35" value="" class="imeActive inputType2byte21to50">
+                                                      <select name="ttmnJyk_3">
+                                                          <option value="1" selected="selected">前方</option>
+                                                          <option value="2">部分</option>
+                                                      </select>
+                                                    <span class="informationMsg">&nbsp;&nbsp;(マンション/外全/外一)</span>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                              <br>
+
+
+
+
+
+                                            <!--end所在地・沿線-->
+                                        <br>
+
+
+
+
+                                        <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                                            {% csrf_token %}
+                                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                                          <tr>
+                                            <td colspan=5 class="text-center submit">
+                                              <button type="submit" name="customer_data" class="btn-xs btn-default">更新</button>
+                                            </td>
+                                          </tr>
+                                    </form>
+                                    </table>
+                                    </div>
+                                    <br><br><br><br><br>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--END CONTENT-->
+</div>
+<!--END PAGE WRAPPER-->
+{% endblock %}

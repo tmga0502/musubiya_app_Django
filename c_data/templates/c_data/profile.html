@@ -1,0 +1,255 @@
+{% extends 'c_data/base.html' %}
+
+{% block content %}
+{% load humanize %}
+<div id="wrapper">
+    <!--BEGIN SIDEBAR MENU-->
+    <nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+        <div class="sidebar-collapse menu-scroll">
+            <ul id="side-menu" class="nav">
+                <div class="clearfix"></div>
+                <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-tachometer fa-fw">
+                      <div class="icon-bg bg-orange"></div>
+                  </i><span class="menu-title">Dashboard</span></a></li>
+                <li><a href="{% url 'c_data:list' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                      <div class="icon-bg bg-green"></div>
+                  </i><span class="menu-title">顧客一覧</span></a>
+                </li>
+                <li><a href="{% url 'c_data:new_data' pk=user.id %}"><i class="fa fa-edit fa-fw">
+                      <div class="icon-bg bg-violet"></div>
+                  </i><span class="menu-title">新規登録</span></a>
+                </li>
+                <li><a href="{% url 'c_data:prospect' pk=user.id %}"><i class="fa fa-th-list fa-fw">
+                      <div class="icon-bg bg-blue"></div>
+                  </i><span class="menu-title">見込管理</span></a>
+                </li>
+                <li><a href="{% url 'c_data:progress' pk=user.id %}"><i class="fa fa-clock-o fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">進捗管理</span></a>
+                </li>
+                <li><a href="{% url 'c_data:data' pk=user.id %}"><i class="fa fa-user fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">紹介管理</span></a>
+                </li>
+                <li><a href="{% url 'c_data:budget_control' pk=user.id %}"><i class="fa fa-bar-chart-o fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">予実管理</span></a>
+                </li>
+                <li><a href="{% url 'reservation:index' %}"><i class="fa fa-calendar fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">設備予約へ</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!--END SIDEBAR MENU-->
+    <!--BEGIN PAGE WRAPPER-->
+    <div id="page-wrapper">
+        <!--BEGIN TITLE & BREADCRUMB PAGE-->
+        <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+            <div class="page-header pull-left">
+                <div class="page-title">プロフィール</div>
+            </div>
+            <ol class="breadcrumb page-breadcrumb pull-right">
+                <li><i class="fa fa-home"></i>&nbsp;<a href="{% url 'c_data:user_detail' pk=user.id %}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                <li class="active"><a href="#">プロフィール</a></li>
+            </ol>
+            <div class="clearfix">
+            </div>
+        </div>
+        <!--END TITLE & BREADCRUMB PAGE-->
+        <!--BEGIN CONTENT-->
+        <!-- 検索ナビ -->
+        <div class="row">
+          <div class="col-lg-12">
+              <nav role="navigation" class="navbar navbar-default">
+                  <div class="container-fluid">
+                      <div class="navbar-header">
+                          <a class="navbar-brand">検索</a></div>
+                      <div id="bs-example-navbar-collapse-2" class="collapse navbar-collapse">
+                        <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                            {% csrf_token %}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            第{{ form.term }}期
+                              &nbsp;
+                              <button type="submit" name="search" class="btn btn-green">表示</button>
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              <button type="submit" name="clear" class="btn btn-green">今期を表示</button>
+                          </form>
+                      </div>
+                  </div>
+              </nav>
+          </div>
+        </div>
+        <!-- END検索ナビ -->
+        <div class="page-content">
+            <div id="tab-general">
+                <div class="row mbl">
+                    <div class="col-lg-12">
+                        <div class="col-md-12">
+                            <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <form method="post" action="">
+                        {% csrf_token %}
+                        <input type=hidden name="musubiya_user_id" value="{{user.id}}">
+                        <div class="panel panel-green">
+                            <div class="panel-heading">アカウント情報<button type="submit" name="update" class="btn-xs btn-default pull-right">更新</button>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group input-group-sm">
+                                  <span class="input-group-addon">アカウント名</span>
+                                  <input type="hidden" name="user" value="{{ user.first_name }} {{ user.last_name }}" class="form-control"/>
+                                  <p class="form-control">{{ user.first_name }} {{ user.last_name }}</p>
+                                </div>
+                                <div class="input-group input-group-sm">
+                                  <span class="input-group-addon">ランク　　　</span>
+                                  {{ form.rank }}
+                                </div>
+                                <div class="input-group input-group-sm">
+                                  <span class="input-group-addon">プラン　　　</span>
+                                  {{ form.plan }}
+                                </div>
+                                <div class="input-group input-group-sm">
+                                  <span class="input-group-addon">結家決算期：第</span>
+                                  {{ form.term }}
+                                  <span class="input-group-addon">期</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="panel panel-red">
+                            <div class="panel-heading">今期売上目標設定
+                              <button type="submit" name="update" class="btn-xs btn-default pull-right">更新</button>
+                            </div>
+                            <table class="table table-hover table-bordered" style="table-layout: fixed; word-break: break-all; word-wrap: break-word; font-size:0.8vmin;">
+                                  <thead>
+                                    <tr>
+                                      <th rowspan=2></th>
+                                      <th colspan=3 style="text-align:center">2018年</th>
+                                      <th colspan=9 style="text-align:center">2019年</th>
+                                      <th rowspan=2 style="text-align:center"></th>
+                                    </tr>
+                                    <tr>
+                                      <th colspan=3 style="text-align:center">1Q</th>
+                                      <th colspan=3 style="text-align:center">2Q</th>
+                                      <th colspan=3 style="text-align:center">3Q</th>
+                                      <th colspan=3 style="text-align:center">4Q</th>
+                                    </tr>
+                                    <tr>
+                                      <th></th>
+                                      <th>10月</th>
+                                      <th>11月</th>
+                                      <th>12月</th>
+                                      <th>1月</th>
+                                      <th>2月</th>
+                                      <th>3月</th>
+                                      <th>4月</th>
+                                      <th>5月</th>
+                                      <th>6月</th>
+                                      <th>7月</th>
+                                      <th>8月</th>
+                                      <th>9月</th>
+                                      <th style="white-space: nowrap;">合計</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                        <td>必達予算</td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Oct  }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Nov }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Dec }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Jan }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Feb }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Mar }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Apr }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_May }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Jun }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Jul }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Aug }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.mandatory_Sep }}
+                                        </td>
+                                        <td style="white-space: nowrap;text-align: center;vertical-align: middle;">
+                                          {{ mandatory_sum  | intcomma}}円
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="white-space: nowrap;">ストレッチ予算</td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Oct }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Nov }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Dec }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Jan }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Feb }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Mar }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Apr }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_May }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Jun }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Jul }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Aug }}
+                                        </td>
+                                        <td class="active" style="padding:0;margin:0;">
+                                          {{ form.stretch_Sep }}
+                                        </td>
+                                        <td style="white-space: nowrap;text-align: center;vertical-align: middle;">
+                                          {{ stretch_sum  | intcomma}}円
+                                        </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                          </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!--END CONTENT-->
+<!--END PAGE WRAPPER-->
+{% endblock %}

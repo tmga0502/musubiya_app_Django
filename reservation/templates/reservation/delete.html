@@ -1,0 +1,75 @@
+{% extends 'reservation/base.html' %}
+
+{% block content %}
+<div id="wrapper">
+<!--BEGIN SIDEBAR MENU-->
+<nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+    <div class="sidebar-collapse menu-scroll">
+        <ul id="side-menu" class="nav">
+            <div class="clearfix"></div>
+            <li><a href="{% url 'reservation:index' %}"><i class="fa fa-th-list fa-fw">
+                  <div class="icon-bg bg-blue"></div>
+              </i><span class="menu-title">TOP</span></a>
+            </li>
+            <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                  <div class="icon-bg bg-green"></div>
+              </i><span class="menu-title">顧客管理表へ</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!--END SIDEBAR MENU-->
+  <div id="page-wrapper">
+    <div class="page-content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="col-md-5 col-sm-12">
+            <div class="panel panel-grey">
+                <div class="panel-heading">この予定を削除しますか？</div>
+                  <div class="panel-body">
+                    <table class="table table-hover">
+                      <tbody style="text-align:center">
+                          <tr class="active">
+                            <td class="col-sm-6">設備</td>
+                            <td class="col-sm-6">{{ space_name }}</td>
+                          </tr>
+                          <tr class="active">
+                              <td class="col-sm-6">用途</td>
+                              <td class="col-sm-6">{{ purpose }}</td>
+                          </tr>
+                          <tr class="active">
+                              <td class="col-sm-6">詳細</td>
+                              <td class="col-sm-6">{{ description }}</td>
+                          </tr>
+                          <tr class="active">
+                              <td class="col-sm-6">日付</td>
+                              <td class="col-sm-6">{{ year }}年{{month}}月{{day}}日</td>
+                          </tr>
+                          <tr class="active">
+                              <td class="col-sm-6">開始</td>
+                              <td class="col-sm-6">{{ start_hour }}時{{start_minute}}分</td>
+                          </tr>
+                          <tr class="active">
+                              <td class="col-sm-6">終了</td>
+                              <td class="col-sm-6">{{ end_hour }}時{{end_minute}}分</td>
+                          </tr>
+                      </tbody>
+                      </form>
+                    </table>
+                    <br><br><br>
+                      <form method="post">
+                        <div style="text-align:center;">
+                          <button class="btn btn-danger">削除する</button>
+                        </div>
+                        {% csrf_token %}
+                      </form>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

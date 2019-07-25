@@ -1,0 +1,148 @@
+{% extends 'c_data/base.html' %}
+
+
+{% block content %}
+<div id="wrapper">
+  <!--BEGIN SIDEBAR MENU-->
+  <nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+      <div class="sidebar-collapse menu-scroll">
+          <ul id="side-menu" class="nav">
+              <div class="clearfix"></div>
+              <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-tachometer fa-fw">
+                    <div class="icon-bg bg-orange"></div>
+                </i><span class="menu-title">Dashboard</span></a></li>
+              <li><a href="{% url 'c_data:list' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                    <div class="icon-bg bg-green"></div>
+                </i><span class="menu-title">顧客一覧</span></a>
+              </li>
+              <li class="active"><a href="{% url 'c_data:new_data' pk=user.id %}"><i class="fa fa-edit fa-fw">
+                    <div class="icon-bg bg-violet"></div>
+                </i><span class="menu-title">新規登録</span></a>
+              </li>
+              <li><a href="{% url 'c_data:prospect' pk=user.id %}"><i class="fa fa-th-list fa-fw">
+                    <div class="icon-bg bg-blue"></div>
+                </i><span class="menu-title">見込管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:progress' pk=user.id %}"><i class="fa fa-clock-o fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">進捗管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:data' pk=user.id %}"><i class="fa fa-user fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">紹介管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:budget_control' pk=user.id %}"><i class="fa fa-bar-chart-o fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">予実管理</span></a>
+              </li>
+              <li><a href="{% url 'reservation:index' %}"><i class="fa fa-calendar fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">設備予約へ</span></a>
+                </li>
+          </ul>
+      </div>
+  </nav>
+  <!--END SIDEBAR MENU-->
+  <div id="page-wrapper">
+      <!--BEGIN TITLE & BREADCRUMB PAGE-->
+      <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+          <div class="page-header pull-left">
+              <div class="page-title">
+                  新規登録</div>
+          </div>
+          <ol class="breadcrumb page-breadcrumb pull-right">
+              <li><i class="fa fa-home"></i>&nbsp;<a href="dashboard.html">Home</a>&nbsp;&nbsp;<i
+                  class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+              <li class="active"><a href="{% url 'c_data:new_data' pk=user.id %}">新規登録</a></li>
+          </ol>
+          <div class="clearfix">
+          </div>
+      </div>
+      <!--END TITLE & BREADCRUMB PAGE-->
+      <!--BEGIN CONTENT-->
+      <div class="page-content">
+          <div id="tab-general">
+              <div class="row mbl">
+                  <div class="col-lg-12">
+                      <div class="col-md-12">
+                          <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-lg-12">
+                      <div class="row">
+                        <div class="panel panel-orange">
+                            <div class="panel-heading">
+                                登録フォーム</div>
+                            <div class="panel-body pan">
+                              <form method="post" action="">
+                                {% csrf_token %}
+                              <div class="form-body pal">
+                                  <div class="row">
+                                    <div class="col-md-3">
+                                        <label>紹介</label>
+                                        {{ form.introduce_year }}{{ form.introduce_year.errors }}年
+                                        {{ form.introduce_month }}{{ form.introduce_month.errors }}月
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>申込予定</label>
+                                        {{ form.apply_year }}{{ form.apply_year.errors }}年
+                                        {{ form.apply_month }}{{ form.apply_month.errors }}月
+                                    </div>
+
+                                      <div class="col-md-2">
+                                          <div class="form-group">
+                                            <label>確度</label>
+                                            {{ form.accuracy }}{{ form.accuracy.errors }}
+                                          </div>
+                                      </div>
+                                      <div class="col-md-2">
+                                          <div class="form-group">
+                                            <label>案件種別</label>
+                                            {{ form.introducer }}{{ form.introducer.errors }}
+                                          </div>
+                                      </div>
+                                      <div class="col-md-2">
+                                          <div class="form-group">
+                                            <label>紹介種別</label>
+                                            {{ form.introduction_type }}{{ form.introduction_type.errors }}
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="input-icon right">
+                                          <i class="fa fa-user"></i>
+                                          {{ form.introducer_name }}{{ form.introducer_name.errors }}</div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="input-icon right">
+                                          <i class="fa fa-user"></i>
+                                          {{ form.customer_name }}{{ form.customer_name.errors }}</div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="input-icon right">
+                                          <i class="fa fa-user"></i>
+                                          {{ form.reading }}{{ form.reading.errors }}</div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="input-icon right">
+                                          <i class="fa fa-money"></i>
+                                          {{ form.brokerage_fee }}{{ form.brokerage_fee.errors }}
+                                      </div>
+                                  </div>
+                                  <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <div class="form-actions text-right pal">
+                                    <button type="submit" class="btn btn-primary">
+                                        Submit</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!--END CONTENT-->
+  </div>
+{% endblock %}

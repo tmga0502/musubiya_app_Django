@@ -1,0 +1,122 @@
+{% extends 'reservation/base.html' %}
+{% load static %}
+{% block content %}
+<div id="wrapper">
+<!--BEGIN SIDEBAR MENU-->
+<nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+    <div class="sidebar-collapse menu-scroll">
+        <ul id="side-menu" class="nav">
+            <div class="clearfix"></div>
+            <li><a href="{% url 'reservation:create' %}"><i class="fa fa-th-list fa-fw">
+                  <div class="icon-bg bg-blue"></div>
+              </i><span class="menu-title">新規登録</span></a>
+            </li>
+            <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                  <div class="icon-bg bg-green"></div>
+              </i><span class="menu-title">顧客管理表へ</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!--END SIDEBAR MENU-->
+<div id="page-wrapper">
+  <div class="page-content">
+      <div class="row">
+        <div class="col-lg-12">
+            <div class="col-md-5 col-sm-12">
+                <div class="panel panel-red">
+                    <div class="panel-heading">Topics</div>
+                    <div class="panel-body">
+                        <div id="context1">
+                          <a href="https://docs.google.com/spreadsheets/d/1h5hoHpGi7xqxYTJHtORzcd9vAtCe_UBB9zbogKt44kg/edit?usp=sharing" target="blank">
+                          <h3> 💴 第９期  17口座入金リスト💰</h3>
+                          </a>
+                        </div>
+                        <div id="context2">
+                          <a href="https://docs.google.com/spreadsheets/d/10Z7BxIlcDP178FbIGQQWIT7uu4ENMd80EoEVn86icWU/edit#gid=486033444​" target="blank">
+                          <h3>💻MTG・レク飲み会出欠表🍻 </h3>
+                          </a>
+                        </div>
+                        <div id="context3">
+                          <a href="https://docs.google.com/spreadsheets/d/1aFlEIZKgi53FRf2ePEiVT4-T3bSAtlAogbigPLLUH5c/edit?usp=sharing" target="blank">
+                          <h3 style="display:inline-block;">🙆管理物件一覧表🍻 </h3>
+                          </a>
+                          <p style="display:inline-block;color:red;">※物件確認の時に見てね！</p>
+                        </div>
+                        <br>
+                        <div id="bccoment">
+                          <img src="{% static 'c_data/dog/bcdog.png' %}" style="float:left;">
+                          <p style="color:red;font-size:20px;">来客以外はスペース予約基本禁止です！！</p>
+                          <span>(※会社公認のMTG除く)</span>
+                        </div>
+                        <div id="bc_footer">
+                          <h4>業者対応はなるべく外でおねがいします☆</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-green">
+                    <div class="panel-heading">カレンダー</div>
+                    <div class="panel-body">
+                      {% include 'reservation/month_index.html' %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 col-sm-12">
+              <div class="panel panel-grey">
+                    <div class="panel-heading">
+                      {{ month_current | date:"Y年m月d日" }}
+                    </div>
+                    <div class="panel-body">
+                        <!-- Aスペ -->
+                        <form method="POST" action="" onSubmit="return check()">
+                {% csrf_token %}
+                        <div class="col-xs-3" style="padding:0;">
+                           {{ time_schedule_a }}
+                        </div>
+                        </form>
+                        <!-- Bスペ -->
+                        <div class="col-xs-3" style="padding:0;">
+                          {{ time_schedule_b }}
+                        </div>
+                        <!-- Cスペ -->
+                        <div class="col-xs-3" style="padding:0;">
+                          {{ time_schedule_c }}
+                        </div>
+                        <!-- 印鑑 -->
+                        <div class="col-xs-3" style="padding:0;">
+                          {{ time_schedule_i }}
+                        </div>
+                      </div><br>
+                  </div>
+              </div>
+            </div>
+
+        </div>
+      </div>
+  </div>
+</div>
+
+
+</div>
+
+<script>
+
+
+function check(){
+
+	if(window.confirm('削除してよろしいですか？')){ // 確認ダイアログを表示
+
+		return true; // 「OK」時は送信を実行
+
+	}
+	else{ // 「キャンセル」時の処理
+
+		window.alert('キャンセルされました'); // 警告ダイアログを表示
+		return false; // 送信を中止
+
+	}
+
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,812 @@
+{% extends 'c_data/base.html' %}
+
+{% block content %}
+{% load humanize %}
+<div id="wrapper">
+    <!--BEGIN SIDEBAR MENU-->
+    <nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+        <div class="sidebar-collapse menu-scroll">
+            <ul id="side-menu" class="nav">
+                <div class="clearfix"></div>
+                <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-tachometer fa-fw">
+                      <div class="icon-bg bg-orange"></div>
+                  </i><span class="menu-title">Dashboard</span></a></li>
+                <li><a href="{% url 'c_data:list' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                      <div class="icon-bg bg-green"></div>
+                  </i><span class="menu-title">顧客一覧</span></a>
+                </li>
+                <li><a href="{% url 'c_data:new_data' pk=user.id %}"><i class="fa fa-edit fa-fw">
+                      <div class="icon-bg bg-violet"></div>
+                  </i><span class="menu-title">新規登録</span></a>
+                </li>
+                <li><a href="{% url 'c_data:prospect' pk=user.id %}"><i class="fa fa-th-list fa-fw">
+                      <div class="icon-bg bg-blue"></div>
+                  </i><span class="menu-title">見込管理</span></a>
+                </li>
+                <li><a href="{% url 'c_data:progress' pk=user.id %}"><i class="fa fa-clock-o fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">進捗管理</span></a>
+                </li>
+                <li><a href="{% url 'c_data:data' pk=user.id %}"><i class="fa fa-user fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">紹介管理</span></a>
+                </li>
+                <li class="active"><a href="{% url 'c_data:budget_control' pk=user.id %}"><i class="fa fa-bar-chart-o fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">予実管理</span></a>
+                </li>
+                <li><a href="{% url 'reservation:index' %}"><i class="fa fa-calendar fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">設備予約へ</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!--END SIDEBAR MENU-->
+    <!--BEGIN PAGE WRAPPER-->
+    <div id="page-wrapper">
+        <!--BEGIN TITLE & BREADCRUMB PAGE-->
+        <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+            <div class="page-header pull-left">
+                <div class="page-title">予実管理</div>
+            </div>
+            <ol class="breadcrumb page-breadcrumb pull-right">
+                <li><i class="fa fa-home"></i>&nbsp;<a href="{% url 'c_data:user_detail' pk=user.id %}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                <li class="active"><a href="{% url 'c_data:budget_control' pk=user.id %}">予実管理</a></li>
+            </ol>
+            <div class="clearfix">
+            </div>
+        </div>
+        <!--END TITLE & BREADCRUMB PAGE-->
+        <!--BEGIN CONTENT-->
+        <div class="page-content">
+            <div id="tab-general">
+                <div class="row mbl">
+                    <div class="col-lg-12">
+                        <div class="col-md-12">
+                            <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 検索ナビ -->
+                    <!-- <div class="row">
+                      <div class="col-lg-12">
+                          <nav role="navigation" class="navbar navbar-default">
+                              <div class="container-fluid">
+                                  <div class="navbar-header">
+                                      <a class="navbar-brand">検索</a></div>
+                                  <div id="bs-example-navbar-collapse-2" class="collapse navbar-collapse">
+                                    <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                                        {% csrf_token %}
+                                          <div class="form-group"><input type="number" placeholder="○○期？" class="form-control" name="term"/></div>
+                                          &nbsp;
+                                          <button type="submit" class="btn btn-green" name="serch">表示</button>
+                                      </form>
+                                  </div>
+                              </div>
+                          </nav>
+                      </div>
+                    </div> -->
+                    <!-- END検索ナビ -->
+                    <div class="col-lg-12">
+                        <div class="panel panel-red">
+                            <div class="panel-heading">売上分析</div>
+                                <table class="table table-hover table-bordered" style="table-layout: fixed; word-break: break-all; word-wrap: break-word; font-size:0.8vmin;">
+                                  <thead>
+                                    <tr>
+                                      <th rowspan=2 style="text-align:center;vertical-align:middle;">第9期</th>
+                                      <th colspan=3 style="text-align:center">2018年</th>
+                                      <th colspan=9 style="text-align:center">2019年</th>
+                                      <th rowspan=2 style="text-align:center"></th>
+                                    </tr>
+                                    <tr>
+                                      <th colspan=3 style="text-align:center">1Q</th>
+                                      <th colspan=3 style="text-align:center">2Q</th>
+                                      <th colspan=3 style="text-align:center">3Q</th>
+                                      <th colspan=3 style="text-align:center">4Q</th>
+                                    </tr>
+                                    <tr>
+                                      <th></th>
+                                      <th>10月</th>
+                                      <th>11月</th>
+                                      <th>12月</th>
+                                      <th>1月</th>
+                                      <th>2月</th>
+                                      <th>3月</th>
+                                      <th>4月</th>
+                                      <th>5月</th>
+                                      <th>6月</th>
+                                      <th>7月</th>
+                                      <th>8月</th>
+                                      <th>9月</th>
+                                      <th>合計</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                        <td>必達予算</td>
+                                        {% for mandatory in mandatory_list %}
+                                        <td class="active" style="text-align:right;">{{ mandatory | intcomma }}&nbsp;&nbsp;円</td>
+                                        {% endfor %}
+                                        <td class="active" style="text-align:right;">{{ mandatory_sum | intcomma }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ストレッチ予算</td>
+                                        {% for stretch in stretch_list %}
+                                        <td class="active" style="text-align:right;">{{ stretch | intcomma }}&nbsp;&nbsp;円</td>
+                                        {% endfor %}
+                                        <td class="active" style="text-align:right;">{{ stretch_sum | intcomma }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    <tr>
+                                        <td>実績</td>
+                                        {% for achievement in achievement_list %}
+                                        <td class="active" style="text-align:right;">{{ achievement | intcomma }}&nbsp;&nbsp;円</td>
+                                        {% endfor %}
+                                        <td class="active" style="text-align:right;">{{ achievement_sum | intcomma }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    <tr><td colspan=14 style="text-align:center;">対必達</td></tr>
+                                    <tr>
+                                        <td>単月度　売上達成率</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.0 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.1 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.2 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.3 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.4 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.5 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.6 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.7 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.8 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.9 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.10 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.11 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amar.12 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>単月度　売上高過不足額</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.0 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.1 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.2 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.3 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.4 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.5 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.6 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.7 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.8 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.9 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.10 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.11 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ amds.12 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>累計　　売上高過不足額</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.0 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.1 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.2 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.3 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.4 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.5 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.6 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.7 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.8 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.9 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.10 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.11 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ acds.12 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                    </tr>
+                                    <tr><td colspan=14 style="text-align:center;">対ストレッチ</td></tr>
+                                    <tr>
+                                        <td>単月度　売上達成率</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.0 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.1 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.2 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.3 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.4 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.5 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.6 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.7 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.8 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.9 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.10 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.11 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smar.12 | floatformat:2 }}&nbsp;&nbsp;％
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>単月度　売上高過不足額</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.0 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.1 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.2 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.3 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.4 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.5 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.6 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.7 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.8 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.9 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.10 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.11 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ smds.12 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>累計　　売上高過不足額</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.0 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.1 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.2 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.3 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.4 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.5 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.6 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.7 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.8 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.9 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.10 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.11 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ scds.12 | intcomma }}&nbsp;&nbsp;円
+                                        </td>
+                                    </tr>
+                                    <tr><td colspan=14 style="text-align:center;">紹介分析（賃貸）</td></tr>
+                                    <tr>
+                                        <td>①直依頼　友人</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.0 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.1 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.2 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.3 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.4 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.5 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.6 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.7 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.8 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.9 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.10 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list.11 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cy_list_sum }}&nbsp;&nbsp;人
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>②直依頼　顧客(ﾘﾋﾟｰﾄ)</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.0 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.1 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.2 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.3 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.4 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.5 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.6 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.7 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.8 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.9 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.10 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list.11 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cr_list_sum }}&nbsp;&nbsp;人
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>③直依頼　PP</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.0 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.1 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.2 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.3 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.4 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.5 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.6 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.7 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.8 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.9 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.10 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list.11 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ cp_list_sum }}&nbsp;&nbsp;人
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>④紹介　友人/td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.0 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.1 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.2 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.3 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.4 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.5 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.6 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.7 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.8 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.9 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.10 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list.11 }}&nbsp;&nbsp;人
+                                          </td>
+                                          <td class="active" style="text-align:right;">
+                                            {{ sy_list_sum }}&nbsp;&nbsp;人
+                                          </td>
+                                    </tr>
+                                    <tr>
+                                        <td>⑤紹介　顧客</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.0 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.1 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.2 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.3 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.4 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.5 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.6 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.7 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.8 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.9 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.10 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list.11 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sk_list_sum }}&nbsp;&nbsp;人
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>⑥紹介　PP</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.0 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.1 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.2 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.3 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.4 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.5 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.6 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.7 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.8 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.9 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.10 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list.11 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sp_list_sum }}&nbsp;&nbsp;人
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>⑦社内紹介</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.0 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.1 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.2 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.3 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.4 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.5 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.6 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.7 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.8 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.9 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.10 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list.11 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ ss_list_sum }}&nbsp;&nbsp;人
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>⑧未設定</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.0 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.1 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.2 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.3 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.4 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.5 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.6 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.7 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.8 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.9 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.10 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list.11 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ st_list_sum }}&nbsp;&nbsp;人
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>紹介数合計</td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.0 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.1 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.2 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.3 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.4 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.5 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.6 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.7 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.8 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.9 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.10 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list.11 }}&nbsp;&nbsp;人
+                                        </td>
+                                        <td class="active" style="text-align:right;">
+                                          {{ sum_list_sum }}&nbsp;&nbsp;人
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>お客様成約数</td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                        <td  class="active"></td>
+                                        <td  class="active"></td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                        <td class="active"></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--END CONTENT-->
+</div>
+<!--END PAGE WRAPPER-->
+</div>
+</div>
+{% endblock %}

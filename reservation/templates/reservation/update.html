@@ -1,0 +1,109 @@
+{% extends 'reservation/base.html' %}
+
+{% block content %}
+<div id="wrapper">
+<!--BEGIN SIDEBAR MENU-->
+<nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+    <div class="sidebar-collapse menu-scroll">
+        <ul id="side-menu" class="nav">
+            <div class="clearfix"></div>
+            <li><a href="{% url 'reservation:index' %}"><i class="fa fa-th-list fa-fw">
+                  <div class="icon-bg bg-blue"></div>
+              </i><span class="menu-title">TOP</span></a>
+            </li>
+            <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                  <div class="icon-bg bg-green"></div>
+              </i><span class="menu-title">顧客管理表へ</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!--END SIDEBAR MENU-->
+<div id="page-wrapper">
+  <div class="page-content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="col-md-5 col-sm-12">
+            <div class="panel panel-grey">
+                <div class="panel-heading">新規登録</div>
+                <div class="panel-body">
+                  <form action="" method="POST">
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                  {% comment %} スペースと用途 {% endcomment %}
+                      <div class="form-group row">
+                        <label for="{{ form.space_name.id_for_label }}" class="col-sm-2 col-form-label"　style="white-space: nowrap">
+                          {{ form.space_name.label_tag }}
+                        </label>
+                        <div class="col-sm-3">
+                            {{ form.space_name }}
+                            {{ form.space_name.errors }}
+                        </div>
+                        <label for="{{ form.purpose.id_for_label }}" class="col-sm-2 col-form-label">
+                          {{ form.purpose.label_tag }}
+                        </label>
+                        <div class="col-sm-3">
+                            {{ form.purpose }}
+                            {{ form.purpose.errors }}
+                        </div>
+                      </div>
+                      {% comment %} 詳細 {% endcomment %}
+                      <div class="form-group row">
+                        <label for="{{ form.description.id_for_label }}" class="col-sm-2 col-form-label">
+                          {{ form.description.label_tag }}
+                        </label>
+                        <div class="col-sm-8">
+                            {{ form.description }}
+                            {{ form.description.errors }}
+                            {{ form.description.non_field_errors }}
+                        </div>
+                      </div>
+                      {% comment %} 日付 {% endcomment %}
+                      <div class="form-group row">
+                        <label for="{{ form.year.id_for_label }}" class="col-sm-2 col-form-label">
+                          {{ form.year.label_tag }}
+                        </label>
+                        <div class="col-sm-8">
+                            {{ form.year }}年{{ form.month }}月{{ form.day }}日
+                        </div>
+                      </div>
+
+                       {% comment %} 繰返し {% endcomment %}
+                       <div class="form-group row ">
+                            <label for="{{ form.repeat.id_for_label }}" class="col-sm-2 col-form-label">
+                              {{ form.repeat.label_tag }}
+                            </label>
+                            <div class="col-sm-3">
+                                {{ form.repeat }}
+                                {{ form.repeat.errors }}
+                            </div>
+                      </div>
+                      {% comment %} 時間 {% endcomment %}
+                      <div class="form-group row">
+                        <label for="{{ form.start_hour.id_for_label }}" class="col-sm-2 col-form-label">
+                          {{ form.start_hour.label_tag }}
+                        </label>
+                        <div class="col-sm-8">
+                            {{ form.start_hour }}時{{ form.start_minute }}分
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="{{ form.end_hour.id_for_label }}" class="col-sm-2 col-form-label">
+                          {{ form.end_hour.label_tag }}
+                        </label>
+                        <div class="col-sm-8">
+                            {{ form.end_hour }}時{{ form.end_minute }}分
+                        </div>
+                      </div>
+                      {{ form.errors }}
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-primary btn-block">登録</button>
+              </form>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+</div>
+{% endblock %}

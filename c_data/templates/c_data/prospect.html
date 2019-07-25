@@ -1,0 +1,308 @@
+{% extends 'c_data/base.html' %}
+
+{% block content %}
+{% load humanize %}
+<div id="wrapper">
+    <!--BEGIN SIDEBAR MENU-->
+    <nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+        <div class="sidebar-collapse menu-scroll">
+            <ul id="side-menu" class="nav">
+                <div class="clearfix"></div>
+                <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-tachometer fa-fw">
+                      <div class="icon-bg bg-orange"></div>
+                  </i><span class="menu-title">Dashboard</span></a></li>
+                <li><a href="{% url 'c_data:list' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                      <div class="icon-bg bg-green"></div>
+                  </i><span class="menu-title">顧客一覧</span></a>
+                </li>
+                <li><a href="{% url 'c_data:new_data' pk=user.id %}"><i class="fa fa-edit fa-fw">
+                      <div class="icon-bg bg-violet"></div>
+                  </i><span class="menu-title">新規登録</span></a>
+                </li>
+                <li class="active"><a href="{% url 'c_data:prospect' pk=user.id %}"><i class="fa fa-th-list fa-fw">
+                      <div class="icon-bg bg-blue"></div>
+                  </i><span class="menu-title">見込管理</span></a>
+                </li>
+                <li><a href="{% url 'c_data:progress' pk=user.id %}"><i class="fa fa-clock-o fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">進捗管理</span></a>
+                </li>
+                <li><a href="{% url 'c_data:data' pk=user.id %}"><i class="fa fa-user fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">紹介管理</span></a>
+                </li>
+                <li><a href="{% url 'c_data:budget_control' pk=user.id %}"><i class="fa fa-bar-chart-o fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">予実管理</span></a>
+                </li>
+                <li><a href="{% url 'reservation:index' %}"><i class="fa fa-calendar fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">設備予約へ</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!--END SIDEBAR MENU-->
+    <!--BEGIN PAGE WRAPPER-->
+    <div id="page-wrapper">
+        <!--BEGIN TITLE & BREADCRUMB PAGE-->
+        <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+            <div class="page-header pull-left">
+                <div class="page-title">売上管理</div>
+            </div>
+            <ol class="breadcrumb page-breadcrumb pull-right">
+                <li><i class="fa fa-home"></i>&nbsp;<a href="{% url 'c_data:user_detail' pk=user.id %}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                <li class="active"><a href="{% url 'c_data:prospect' pk=user.id %}">売上管理</a></li>
+            </ol>
+            <div class="clearfix">
+            </div>
+        </div>
+        <!--END TITLE & BREADCRUMB PAGE-->
+        <!--BEGIN CONTENT-->
+        <div class="page-content">
+            <div id="tab-general">
+                <div class="row mbl">
+                    <div class="col-lg-12">
+                        <div class="col-md-12">
+                            <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 検索ナビ -->
+                    <div class="row">
+                      <div class="col-lg-12">
+                          <nav role="navigation" class="navbar navbar-default">
+                              <div class="container-fluid">
+                                  <div class="navbar-header">
+                                      <a class="navbar-brand">検索</a></div>
+                                  <div id="bs-example-navbar-collapse-2" class="collapse navbar-collapse">
+                                      <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                                          {% csrf_token %}
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          <div class="form-group">
+                                            検索：{{ form.apply_year }}{{ form.apply_month }}
+                                          </div>
+                                          &nbsp;
+                                          <button type="submit" name="serch" class="btn btn-blue">表示</button>
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          <button type="submit" name="clear" class="btn btn-blue">クリア</button>
+                                      </form>
+                                  </div>
+                              </div>
+                          </nav>
+                      </div>
+                    </div>
+                    <!-- END検索ナビ -->
+                    {{ next_month }}
+                    <div class="col-lg-12">
+                      <div class="col-lg-7">
+                          <div class="panel panel-red">
+                              <div class="panel-heading">申込状況【{{this_year}}年{{this_month}}月】</div>
+                              <div class="panel-body">
+                                  <table class="table table-hover" style="table-layout: fixed; word-break: break-all; word-wrap: break-word;">
+                                    <thead>
+                                      <tr>
+                                        <th class="col-lg-3"></th>
+                                        <th class="col-lg-2" style="text-align:center;">仲手(税込)</th>
+                                        <th class="col-lg-2" style="text-align:center;">AD</th>
+                                        <th class="col-lg-2" style="text-align:center;">割引</th>
+                                        <th class="col-lg-3" style="text-align:center;">合計</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td><span class="label label-sm label-success">申込合計</span></td>
+                                        <td style="text-align:right;">{{ apply_bf_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ apply_ad_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ apply_dis_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ apply_sum }}&nbsp;&nbsp;円</td>
+                                      </tr>
+                                      <tr>
+                                        <td><span class="label label-sm label-warning">当月着金</span></td>
+                                        <td style="text-align:right;">{{ tmd_bf_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ tmd_ad_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ tmd_dis_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ tmd_sum }}&nbsp;&nbsp;円</td>
+                                      </tr>
+                                      <tr>
+                                        <td><span class="label label-sm label-default">翌月着金</span></td>
+                                        <td style="text-align:right;">{{ nmd_bf_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ nmd_ad_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ nmd_dis_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ nmd_sum }}&nbsp;&nbsp;円</td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan=5></td>
+                                      </tr>
+                                      <tr>
+                                        <td><span class="label label-sm label-blue">内　当月申込</span></td>
+                                        <td style="text-align:right;">{{ tma_bf_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ tma_ad_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ tma_dis_sum }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ tma_sum }}&nbsp;&nbsp;円</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                  <br>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="panel panel-violet">
+                            <div class="panel-heading">【確度別】見込み売上</div>
+                            <div class="panel-body">
+                                <table class="table table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th style="text-align:center;">確度</th>
+                                      <th style="text-align:center;">件数</th>
+                                      <th style="text-align:center;">金額</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td style="text-align:center;">A</td>
+                                      <td style="text-align:right;">{{ a_count }}&nbsp;&nbsp;件</td>
+                                      <td style="text-align:right;">{{ a_price }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    <tr>
+                                      <td style="text-align:center;">B</td>
+                                      <td style="text-align:right;">{{ b_count }}&nbsp;&nbsp;件</td>
+                                      <td style="text-align:right;">{{ b_price }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    <tr>
+                                      <td style="text-align:center;">B+</td>
+                                      <td style="text-align:right;">{{ b_plus_count }}&nbsp;&nbsp;件</td>
+                                      <td style="text-align:right;">{{ b_plus_price }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    <tr>
+                                      <td style="text-align:center;">C</td>
+                                      <td style="text-align:right;">{{ c_count }}&nbsp;&nbsp;件</td>
+                                      <td style="text-align:right;">{{ c_price }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    <tr>
+                                      <td style="text-align:center;">合計</td>
+                                      <td style="text-align:right;">{{ count_sum }}&nbsp;&nbsp;件</td>
+                                      <td style="text-align:right;">{{ price_sum }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="col-lg-3">
+                          <div class="panel panel-pink">
+                              <div class="panel-heading">見込客</div>
+                              <div class="panel-body">
+                                  <table class="table table-hover">
+                                    <thead>
+                                      <tr>
+                                        <th style="text-align:center;">名前</th>
+                                        <th style="text-align:center;">確度</th>
+                                        <th style="text-align:center;">売上</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for ptm in  prospect_this_month%}
+                                      <tr>
+                                          <td>{{ ptm.customer_name }}</td>
+                                          <td style="text-align:center;">{{ ptm.accuracy }}</td>
+                                          <td style="text-align:right;">{{ ptm.brokerage_fee|intcomma }}&nbsp;&nbsp;円</td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-lg-3">
+                        <div class="panel panel-green">
+                            <div class="panel-heading">申込中</div>
+                            <div class="panel-body">
+                                <table class="table table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th style="text-align:center;">名前</th>
+                                      <th style="text-align:center;">仲手</th>
+                                      <th style="text-align:center;">AD</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for an in  apply_now%}
+                                    <tr>
+                                        <td>{{ an.customer_name }}</td>
+                                        <td style="text-align:center;">{{ an.brokerage_fee|intcomma }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ an.advertising_fee|intcomma }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-3">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading">当月着金予定</div>
+                            <div class="panel-body">
+                                <table class="table table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th style="text-align:center;">名前</th>
+                                      <th style="text-align:center;">仲手</th>
+                                      <th style="text-align:center;">AD</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for ta in  tm_apply%}
+                                    <tr>
+                                        <td>{{ ta.customer_name }}</td>
+                                        <td style="text-align:center;">{{ ta.brokerage_fee|intcomma }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ ta.advertising_fee|intcomma }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-3">
+                        <div class="panel panel-grey">
+                            <div class="panel-heading">翌月着金予定</div>
+                            <div class="panel-body">
+                                <table class="table table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th style="text-align:center;">名前</th>
+                                      <th style="text-align:center;">仲手</th>
+                                      <th style="text-align:center;">AD</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for nm in  nm_apply %}
+                                    <tr>
+                                        <td>{{ nm.customer_name }}</td>
+                                        <td style="text-align:center;">{{ nm.brokerage_fee|intcomma }}&nbsp;&nbsp;円</td>
+                                        <td style="text-align:right;">{{ nm.advertising_fee|intcomma }}&nbsp;&nbsp;円</td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--END CONTENT-->
+</div>
+<!--END PAGE WRAPPER-->
+</div>
+</div>
+{% endblock %}

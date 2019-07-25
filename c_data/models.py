@@ -1,0 +1,132 @@
+from django.db import models
+from django.utils import timezone
+
+# Create your models here.
+
+class MusubiyaUser(models.Model):
+    musubiya_user_id = models.IntegerField(verbose_name='ユーザーID')
+    user = models.CharField(verbose_name='名前', max_length=30)
+    rank = models.CharField(verbose_name='ランク', max_length=30)
+    plan = models.CharField(verbose_name='プラン', max_length=30)
+    term = models.IntegerField(verbose_name='期')
+    mandatory_Oct = models.IntegerField(verbose_name='必達10月', default=0)
+    mandatory_Nov = models.IntegerField(verbose_name='必達11月', default=0)
+    mandatory_Dec = models.IntegerField(verbose_name='必達12月', default=0)
+    mandatory_Jan = models.IntegerField(verbose_name='必達1月', default=0)
+    mandatory_Feb = models.IntegerField(verbose_name='必達2月', default=0)
+    mandatory_Mar = models.IntegerField(verbose_name='必達3月', default=0)
+    mandatory_Apr = models.IntegerField(verbose_name='必達4月', default=0)
+    mandatory_May = models.IntegerField(verbose_name='必達5月', default=0)
+    mandatory_Jun = models.IntegerField(verbose_name='必達6月', default=0)
+    mandatory_Jul = models.IntegerField(verbose_name='必達7月', default=0)
+    mandatory_Aug = models.IntegerField(verbose_name='必達8月', default=0)
+    mandatory_Sep = models.IntegerField(verbose_name='必達9月', default=0)
+    stretch_Oct = models.IntegerField(verbose_name='必達10月', default=0)
+    stretch_Nov = models.IntegerField(verbose_name='必達11月', default=0)
+    stretch_Dec = models.IntegerField(verbose_name='必達12月', default=0)
+    stretch_Jan = models.IntegerField(verbose_name='必達1月', default=0)
+    stretch_Feb = models.IntegerField(verbose_name='必達2月', default=0)
+    stretch_Mar = models.IntegerField(verbose_name='必達3月', default=0)
+    stretch_Apr = models.IntegerField(verbose_name='必達4月', default=0)
+    stretch_May = models.IntegerField(verbose_name='必達5月', default=0)
+    stretch_Jun = models.IntegerField(verbose_name='必達6月', default=0)
+    stretch_Jul = models.IntegerField(verbose_name='必達7月', default=0)
+    stretch_Aug = models.IntegerField(verbose_name='必達8月', default=0)
+    stretch_Sep = models.IntegerField(verbose_name='必達9月', default=0)
+
+    def __str__(self):
+        return self.user
+
+class CustomerData(models.Model):
+    user_id = models.IntegerField(verbose_name='ユーザーID')
+    status = models.CharField(verbose_name='状況', max_length=50,blank=True)
+    introduce_year = models.CharField(verbose_name='紹介年', max_length=5,blank=True)
+    introduce_month = models.CharField(verbose_name='紹介月', max_length=5,blank=True)
+    apply_year = models.CharField(verbose_name='申込年', max_length=5,blank=True)
+    apply_month = models.CharField(verbose_name='申込月', max_length=5,blank=True)
+    accuracy = models.CharField(verbose_name='確度', max_length=10,blank=True)
+    reading = models.CharField(verbose_name='読み仮名', max_length=50,blank=True)
+    customer_name = models.CharField(verbose_name='お客様名', max_length=50,blank=True)
+    introducer = models.CharField(verbose_name='紹介元', max_length=10,blank=True)
+    introducer_name = models.CharField(verbose_name='紹介者', max_length=50,blank=True)
+    introduction_type = models.CharField(verbose_name='紹介種別', max_length=30,blank=True)
+    brokerage_fee = models.IntegerField(verbose_name='仲介手数料',blank=True, null=True, default=0)
+    advertising_fee = models.IntegerField(verbose_name='AD', blank=True, default=0)
+    discount = models.IntegerField(verbose_name='割引',blank=True, default=0)
+    bf_payment_schedule_year = models.SmallIntegerField(verbose_name='仲手入金予定年',blank=True, default=0, null=True)
+    bf_payment_schedule_month = models.SmallIntegerField(verbose_name='仲手入金予定月',blank=True, default=0, null=True)
+    bf_payment_check = models.SmallIntegerField(verbose_name='仲手入金チェック', blank=True, default=0)
+    bf_payment_amount = models.IntegerField(verbose_name='仲手入金額',blank=True, null=True, default=0)
+    bf_payment_nen = models.SmallIntegerField(verbose_name='仲手入金年',blank=True, default=0, null=True)
+    bf_payment_month = models.SmallIntegerField(verbose_name='仲手入金月',blank=True, default=0, null=True)
+    bf_payment_day = models.SmallIntegerField(verbose_name='仲手入金日',blank=True, default=0, null=True)
+    ad_payment_schedule_year = models.SmallIntegerField(verbose_name='AD入金予定年',blank=True, null=True, default=0)
+    ad_payment_schedule_month = models.SmallIntegerField(verbose_name='AD入金予定月',blank=True, null=True, default=0)
+    ad_payment_check = models.SmallIntegerField(verbose_name='AD入金チェック', default=0)
+    ad_payment_amount = models.IntegerField(verbose_name='AD入金額',blank=True, null=True, default=0)
+    ad_payment_nen = models.SmallIntegerField(verbose_name='AD入金年',blank=True, null=True, default=0)
+    ad_payment_month = models.SmallIntegerField(verbose_name='AD入金月',blank=True, null=True, default=0)
+    ad_payment_day = models.SmallIntegerField(verbose_name='AD入金日',blank=True, default=0)
+    apartment_name = models.CharField(verbose_name='物件名', max_length=255,blank=True)
+    room_number = models.CharField(verbose_name='号室', max_length=10,blank=True, default='')
+    postal_code = models.CharField(verbose_name='郵便番号', max_length=50,blank=True)
+    address1 = models.CharField(verbose_name='住所1',max_length=255 ,blank=True)
+    address2 = models.CharField(verbose_name='住所2',max_length=255, blank=True)
+    real_estate_agent = models.CharField(verbose_name='管理会社', max_length=255,blank=True)
+    tel = models.CharField(verbose_name='管理会社tel', max_length=20,blank=True)
+    fax = models.CharField(verbose_name='管理会社fax', max_length=20,blank=True)
+    person_in_charge = models.CharField(verbose_name='担当者名', max_length=50,blank=True)
+    contract_start_year = models.SmallIntegerField(verbose_name='賃発年',blank=True, default=0)
+    contract_start_month = models.SmallIntegerField(verbose_name='賃発月',blank=True, default=0)
+    contract_start_day = models.SmallIntegerField(verbose_name='賃発日',blank=True, default=0)
+    contract_end_year = models.SmallIntegerField(verbose_name='解約年',blank=True, default=0)
+    contract_end_month = models.SmallIntegerField(verbose_name='解約月',blank=True, default=0)
+    contract_end_day = models.SmallIntegerField(verbose_name='解約日',blank=True, default=0)
+    remarks = models.TextField(verbose_name='備考',blank=True)
+    progress = models.TextField(verbose_name='進捗',blank=True)
+    sex = models.SmallIntegerField(verbose_name='性別',blank=True, default=True)
+    birthday = models.DateField(verbose_name='誕生日',blank=True, null=True)
+    age = models.SmallIntegerField(verbose_name='年齢',blank=True, null=True)
+    born = models.CharField(verbose_name='出身', max_length=50,blank=True)
+    partner = models.SmallIntegerField(verbose_name='パートナー', default=0,blank=True)
+    child = models.SmallIntegerField(verbose_name='子供', default=0,blank=True)
+    partner_name = models.CharField(verbose_name='パートナー名', max_length=50,blank=True)
+    partner_birthday = models.DateField(verbose_name='パートナー誕生日',blank=True, null=True)
+    child1_name = models.CharField(verbose_name='子供名', max_length=50,blank=True)
+    child1_birthday = models.DateField(verbose_name='子供誕生日',blank=True, null=True)
+    child2_name = models.CharField(verbose_name='子供名', max_length=50,blank=True)
+    child2_birthday = models.DateField(verbose_name='子供誕生日',blank=True, null=True)
+    relation = models.CharField(verbose_name='関係性', max_length=255,blank=True)
+    encount = models.CharField(verbose_name='出会い', max_length=255,blank=True)
+    hope = models.CharField(verbose_name='結家に期待していること', max_length=255,blank=True)
+    job = models.CharField(verbose_name='仕事', max_length=50,blank=True)
+    position = models.CharField(verbose_name='役職', max_length=50,blank=True)
+    hoby = models.TextField(verbose_name='趣味', max_length=255,blank=True)
+    dream = models.TextField(verbose_name='夢',blank=True)
+    other = models.TextField(verbose_name='その他',blank=True)
+    required_documents = models.PositiveSmallIntegerField(verbose_name='必要書類',default=0, blank=True)
+    contract_location = models.PositiveSmallIntegerField(verbose_name='契約場所案内',default=0, blank=True)
+    settlement = models.PositiveSmallIntegerField(verbose_name='精算書送付',default=0, blank=True)
+    life_line = models.PositiveSmallIntegerField(verbose_name='ライフライン案内',default=0, blank=True)
+    confirmation = models.PositiveSmallIntegerField(verbose_name='契約金入金確認',default=0, blank=True)
+    guarantor = models.PositiveSmallIntegerField(verbose_name='保証人承諾書案内	',default=0, blank=True)
+    hand_ovre_kye = models.PositiveSmallIntegerField(verbose_name='鍵渡し場所案内',default=0, blank=True)
+    contract_procedures = models.PositiveSmallIntegerField(verbose_name='契約手続き',default=0, blank=True)
+    ADs_invoice = models.PositiveSmallIntegerField(verbose_name='AD請求書送付',default=0, blank=True)
+
+    def __str__(self):
+        return self.customer_name
+
+class Post(models.Model):
+    user_id = models.IntegerField(verbose_name='ユーザーID')
+    message = models.CharField(
+        max_length=100,
+        verbose_name="タスク",
+    )
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="登録日時",
+    )
+
+    def __str__(self):
+        return self.post

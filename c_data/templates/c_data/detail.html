@@ -1,0 +1,630 @@
+{% extends 'c_data/base.html' %}
+
+{% block content %}
+<div id="wrapper">
+    <!--BEGIN SIDEBAR MENU-->
+    <nav id="sidebar" role="navigation" data-step="2" data-intro="Template has &lt;b&gt;many navigation styles&lt;/b&gt;" data-position="right" class="navbar-default navbar-static-side">
+      <div class="sidebar-collapse menu-scroll">
+          <ul id="side-menu" class="nav">
+              <div class="clearfix"></div>
+              <li><a href="{% url 'c_data:user_detail' pk=user.id %}"><i class="fa fa-tachometer fa-fw">
+                  <div class="icon-bg bg-orange"></div>
+                </i><span class="menu-title">Dashboard</span></a></li>
+              <li><a href="{% url 'c_data:list' pk=user.id %}"><i class="fa fa-desktop fa-fw">
+                  <div class="icon-bg bg-green"></div>
+                </i><span class="menu-title">顧客一覧</span></a>
+              </li>
+              <li class="active"><a href="#"><i class="fa fa-th-list fa-fw">
+                  <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">詳細</span></a>
+              </li>
+              <li><a href="{% url 'c_data:new_data' pk=user.id %}"><i class="fa fa-edit fa-fw">
+                  <div class="icon-bg bg-violet"></div>
+                </i><span class="menu-title">新規登録</span></a>
+              </li>
+              <li><a href="{% url 'c_data:prospect' pk=user.id %}"><i class="fa fa-th-list fa-fw">
+                  <div class="icon-bg bg-blue"></div>
+                </i><span class="menu-title">見込管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:progress' pk=user.id %}"><i class="fa fa-clock-o fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">進捗管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:data' pk=user.id %}"><i class="fa fa-user fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">紹介管理</span></a>
+              </li>
+              <li><a href="{% url 'c_data:budget_control' pk=user.id %}"><i class="fa fa-bar-chart-o fa-fw">
+                    <div class="icon-bg bg-red"></div>
+                </i><span class="menu-title">予実管理</span></a>
+              </li>
+              <li><a href="{% url 'reservation:index' %}"><i class="fa fa-calendar fa-fw">
+                      <div class="icon-bg bg-red"></div>
+                  </i><span class="menu-title">設備予約へ</span></a>
+                </li>
+          </ul>
+      </div>
+    </nav>
+    <!--END SIDEBAR MENU-->
+    <!--BEGIN PAGE WRAPPER-->
+    <div id="page-wrapper">
+        <!--BEGIN TITLE & BREADCRUMB PAGE-->
+        <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+            <div class="page-header pull-left">
+                <div class="page-title">【{{ c_data.customer_name }}】詳細</div>
+            </div>
+            <ol class="breadcrumb page-breadcrumb pull-right">
+                <li><i class="fa fa-home"></i>&nbsp;<a href="{% url 'c_data:user_detail' pk=user.id %}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                <li class="active"><a href="{% url 'c_data:list' pk=user.id %}">顧客一覧</a><i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                <li class="active">【{{ c_data.customer_name }}】詳細</li>
+            </ol>
+            <div class="clearfix">
+            </div>
+        </div>
+        <!--END TITLE & BREADCRUMB PAGE-->
+        <!--BEGIN CONTENT-->
+        <div class="page-content">
+            <div id="tab-general">
+                <div class="row mbl">
+                    <div class="col-lg-12">
+                      <div class="col-md-12">
+                          <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
+                          </div>
+                      </div>
+                    </div>
+
+                  <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-12">
+                          <div class="row">
+                            <!-- お客様情報 -->
+                              <div class="col-lg-4">
+                                <div class="panel panel-yellow">
+                                    <div class="panel-heading">お客様情報</div>
+                                      <div class="panel-body">
+                                        <table class="table table-hover table-bordered">
+                                          <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                                              {% csrf_token %}
+                                          <input type="hidden" name="user_id" value="{{ user.id }}">
+                                            <tr>
+                                              <td style="white-space: nowrap;">お客様名</td>
+                                              <td colspan=4 style="padding:0;margin:0;">
+                                                  {{ form.customer_name }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>ふりがな</td>
+                                              <td colspan=4 style="padding:0;margin:0;">
+                                                {{ form.reading }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>状況</td>
+                                              <td colspan=4 style="padding:0;margin:0;">
+                                                {{ form.status }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>確度</td>
+                                              <td colspan=4 style="padding:0;margin:0;">
+                                                {{ form.accuracy }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>紹介</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.introduce_year }}
+                                              </td>
+                                              <td>年</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.introduce_month }}
+                                              </td>
+                                              <td>月</td>
+                                            </tr>
+                                            <tr>
+                                              <td>申込予定</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.apply_year }}
+                                              </td>
+                                              <td>年</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.apply_month }}
+                                              </td>
+                                              <td>月</td>
+                                            </tr>
+                                            <tr>
+                                              <td>案件種別</td>
+                                              <td colspan=4 style="padding:0;margin:0;">
+                                                {{ form.introducer }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>紹介者名</td>
+                                              <td colspan=4 style="padding:0;margin:0;">
+                                                {{ form.introducer_name }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>紹介種別</td>
+                                              <td colspan=4 style="padding:0;margin:0;">
+                                                {{ form.introduction_type }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>進捗状況</td>
+                                              <td colspan=4 style="padding:0;margin:0;">
+                                                {{ form.progress }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td colspan=5 class="text-center submit">
+                                                <button type="submit" name="customer_data" class="btn-xs btn-default">更新</button>
+                                              </td>
+                                            </tr>
+                                      </form>
+                                     </table>
+                                      </div>
+                                      <br><br><br><br><br>
+                                </div>
+                              </div>
+                            <!-- 売上情報 -->
+                              <div class="col-lg-8">
+                                  <div class="panel panel-red">
+                                      <div class="panel-heading">売上情報</div>
+                                       <div class="panel-body">
+                                          <table class="table table-bordered">
+                                            <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                                                {% csrf_token %}
+                                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                                              <tr>
+                                                <td colspan="8" style='text-align:center' class="bg-info"><span class="label label-sm label-info">予定売上</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td rowspan=2 style="white-space: nowrap;text-align: center;vertical-align: middle;">仲手</td>
+                                                <td>金額</td>
+                                                <td  style="padding:0;margin:0;">
+                                                  {{ form.brokerage_fee }}
+                                                </td>
+                                                <td style="white-space: nowrap;">(税込)</td>
+                                                <td colspan=4 style="padding:0;margin:0;vertical-align:center;text-align:center;">
+                                                  <input type="text" class="form-control input-nomal" value="{{ bf_tax_included }}" readonly>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="white-space: nowrap;">入金予定</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.bf_payment_schedule_year }}
+                                                </td>
+                                                <td>年</td>
+                                                <td colspan=3 style="padding:0;margin:0;">
+                                                  {{ form.bf_payment_schedule_month }}
+                                                </td>
+                                                <td>月</td>
+                                              </tr>
+                                              <tr>
+                                                <td rowspan=2 style="white-space: nowrap;text-align: center;vertical-align: middle;">AD</td>
+                                                <td>金額</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.advertising_fee }}
+                                                </td>
+                                                <td style="white-space: nowrap;">(税込)</td>
+                                                <td colspan=4 style="padding:0;margin:0;">
+                                                  <input type="text" class="form-control input-nomal" value="{{ ad_tax_included }}" readonly>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="white-space: nowrap;">入金予定</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.ad_payment_schedule_year }}
+                                                </td>
+                                                <td>年</td>
+                                                <td colspan=3 style="padding:0;margin:0;">
+                                                  {{ form.ad_payment_schedule_month }}
+                                                </td>
+                                                <td>月</td>
+                                              </tr>
+                                              <tr>
+                                                <td style="white-space: nowrap;">割引</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.discount }}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td colspan="8" style='text-align:center' class="bg-green"><span class="label label-sm label-green">【確定】仲介手数料</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td style="white-space: nowrap;">入金チェック</td>
+                                                <td>{{ form.bf_payment_check }}</td>
+                                                <td>入金額</td>
+                                                <td colspan=5 style="padding:0;margin:0;">{{ form.bf_payment_amount }}</td>
+                                              </tr>
+                                              <tr>
+                                                <td colspan=2>入金日</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.bf_payment_nen }}
+                                                </td>
+                                                <td>年</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.bf_payment_month }}
+                                                </td>
+                                                <td>月</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.bf_payment_day }}
+                                                </td>
+                                                <td>日</td>
+                                              </tr>
+                                              <tr>
+                                                <td colspan="8" style='text-align:center' class="bg-red"><span class="label label-sm label-red">【確定】AD</span></td>
+                                              </tr>
+                                              <tr>
+                                                <td style="white-space: nowrap;">入金チェック</td>
+                                                <td>{{ form.ad_payment_check }}</td>
+                                                <td>入金額</td>
+                                                <td colspan=5 style="padding:0;margin:0;">{{ form.ad_payment_amount }}</td>
+                                              </tr>
+                                              <tr>
+                                                <td colspan=2>入金日</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.ad_payment_nen }}
+                                                </td>
+                                                <td>年</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.ad_payment_month }}
+                                                </td>
+                                                <td>月</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.ad_payment_day }}
+                                                </td>
+                                                <td>日</td>
+                                              </tr>
+                                              <tr>
+                                                <td colspan=8 class="text-center submit">
+                                                  <button type="submit" name="sales_data" class="btn-xs btn-default">更新</button>
+                                                </td>
+                                              </tr>
+                                            </form>
+                                          </table>
+                                          <br><br>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-12">
+                          <div class="row">
+                            <!-- 物件情報 -->
+                            <div class="col-lg-8">
+                                <div class="panel panel-green">
+                                    <div class="panel-heading">物件情報</div>
+                                    <div class="panel-body">
+                                        <table class="table table-hover table-bordered">
+                                          <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                                              {% csrf_token %}
+                                          <input type="hidden" name="user.id" value="{{ user.id }}">
+                                          <span class="p-country-name" style="display:none;">Japan</span>
+                                            <tr>
+                                              <td>郵便番号</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.postal_code }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>住所1</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.address1 }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>住所2</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.address2 }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>物件名</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.apartment_name }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>号室</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.room_number }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>管理会社名</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.real_estate_agent }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>担当</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.person_in_charge }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>電話番号</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.tel }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>FAX番号</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.fax }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>賃発日</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.contract_start_year }}
+                                              </td>
+                                              <td>年</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.contract_start_month }}
+                                              </td>
+                                              <td>月</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.contract_start_day }}
+                                              </td>
+                                              <td>日</td>
+                                            </tr>
+                                            <tr>
+                                                <td>解約日</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.contract_end_year }}
+                                                </td>
+                                                <td>年</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.contract_end_month }}
+                                                </td>
+                                                <td>月</td>
+                                                <td style="padding:0;margin:0;">
+                                                  {{ form.contract_end_day }}
+                                                </td>
+                                                <td>日</td>
+                                            </tr>
+                                            <tr>
+                                              <td>備考</td>
+                                              <td colspan=7 style="padding:0;margin:0;">
+                                                {{ form.remarks }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td colspan=7 class="text-center submit">
+                                                <button type="submit" name="property_data" class="btn-xs btn-default">更新</button>
+                                              </td>
+                                            </tr>
+                                          </form>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 審査後フロー -->
+                            <div class="col-lg-4">
+                              <div class="panel panel-violet">
+                                  <div class="panel-heading">審査後フロー</div>
+                                  <div class="panel-body">
+                                      <table class="table table-hover table-bordered">
+                                        <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                                            {% csrf_token %}
+                                        <input type="hidden" name="user.id" value="{{ user.id }}">
+                                          <tr>
+                                              <td>必要書類の伝達</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.required_documents }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>契約場所案内</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.contract_location }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>精算書送付</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.settlement }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>ライフライン案内</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.life_line }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>契約金入金確認</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.confirmation }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>保証人承諾書案内</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.guarantor }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>鍵渡し場所案内</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.hand_ovre_kye }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>契約手続き</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.contract_procedures }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>AD請求書送付</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.ADs_invoice }}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                            <td colspan=2 class="text-center submit">
+                                              <button type="submit" name="flow_data" class="btn-xs btn-default">更新</button>
+                                            </td>
+                                          </tr>
+                                        </form>
+                                      </table>
+                                      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                                  </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                          <div class="row">
+                            <!-- 詳細情報 -->
+                            <div class="col-lg-12">
+                                <div class="panel panel-grey">
+                                    <div class="panel-heading">詳細情報</div>
+                                    <div class="panel-body">
+                                        <table class="table table-bordered">
+                                          <form action="" method="POST" role="search" class="navbar-form navbar-left">
+                                              {% csrf_token %}
+                                          <input type="hidden" name="user.id" value="{{ user.id }}">
+                                            <tr>
+                                              <td>性別</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.sex }}
+                                              </td>
+                                              <td>出身</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.born }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>誕生日</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.birthday }}
+                                              </td>
+                                              <td>年齢</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.age }}
+                                              </td>
+                                            <tr>
+                                              <td>パートナー</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.partner }}
+                                              </td>
+                                              <td>子供</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.child }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td colspan=4 style='text-align:center' class="bg-warning"><span class="label label-sm label-warning">パートナー</span></td>
+                                            </tr>
+                                            <tr>
+                                              <td>名前</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.partner_name }}
+                                              </td>
+                                              <td>誕生日</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.partner_birthday }}
+                                              </td>
+                                            <tr>
+                                              <td colspan=4 style='text-align:center' class="bg-danger"><span class="label label-sm label-danger">子供</span></td>
+                                            </tr>
+                                            <tr>
+                                              <td>名前</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.child1_name }}
+                                              </td>
+                                              <td>誕生日</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.child1_birthday }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>名前</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.child2_name }}
+                                              </td>
+                                              <td>誕生日</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.child2_birthday }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td colspan=4 style='text-align:center' class="bg-info"><span class="label label-sm label-info">その他</span></td>
+                                            </tr>
+                                            <tr>
+                                              <td>紹介者との関係性</td>
+                                              <td colspan=3 style="padding:0;margin:0;">
+                                                {{ form.relation }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>紹介者との出会い</td>
+                                              <td colspan=3 style="padding:0;margin:0;">
+                                                {{ form.encount }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>結家に期待すること</td>
+                                              <td colspan=3 style="padding:0;margin:0;">
+                                                {{ form.hope }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>職業</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.job }}
+                                              </td>
+                                              <td>役職</td>
+                                              <td style="padding:0;margin:0;">
+                                                {{ form.position }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>趣味</td>
+                                              <td colspan=3  style="padding:0;margin:0;">
+                                                {{ form.hoby }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>夢・目標</td>
+                                              <td colspan=3 style="padding:0;margin:0;">
+                                                {{ form.dream }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>その他</td>
+                                              <td  colspan=3 style="padding:0;margin:0;">
+                                                {{ form.other }}
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td colspan=4 class="text-center submit">
+                                                <button type="submit" name="detail_data" class="btn-xs btn-default">更新</button>
+                                              </td>
+                                            </tr>
+                                          </form>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END CONTENT-->
+</div>
+<!--END PAGE WRAPPER-->
+</div>
+</div>
+{% endblock %}
