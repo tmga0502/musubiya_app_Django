@@ -53,6 +53,7 @@ class TimeSchedule:
             'height': self.minute_height * self.step / 2,
             'text': text,
             's_id': schedule.id,
+            's_userID': schedule.user_id,
             'url': "/reservation/month/delete/",
         }
 

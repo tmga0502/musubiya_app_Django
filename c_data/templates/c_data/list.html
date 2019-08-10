@@ -111,6 +111,7 @@
                                             <th>申込予定</th>
                                             <th>紹介者名</th>
                                             <th>備考</th>
+                                            <th>削除<th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -121,6 +122,7 @@
                                               <td><a href="{% url 'c_data:detail' pk=user.id CustomerData_id=c_data.id %}">{{ c_data.apply_year }}年{{ c_data.apply_month }}月</a></td>
                                               <td><a href="{% url 'c_data:detail' pk=user.id CustomerData_id=c_data.id %}">{{ c_data.introducer_name }}</a></td>
                                               <td><a href="{% url 'c_data:detail' pk=user.id CustomerData_id=c_data.id %}">{{ c_data.remarks }}</a></td>
+                                              <td><input type=button value="削除"></td>
                                           </tr>
                                         {% endfor %}
                                         </tbody>
